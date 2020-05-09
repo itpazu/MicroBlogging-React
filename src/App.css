@@ -35,3 +35,6 @@ body {
 .header-tweet {
   color: #6c757d;
 }
+.error-post {
+  color: red;
+}
