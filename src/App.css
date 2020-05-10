@@ -2,6 +2,7 @@ body {
   background-color: #15202b;
   color: white;
 }
+
 .container {
   height: 150px;
 }
@@ -28,7 +29,8 @@ body {
   color: white;
   padding: 10px;
 }
-.wrapper-tweet {
+.wrapper-tweet,
+.nav-bar {
   background-color: #343a40;
 }
 
@@ -37,4 +39,7 @@ body {
 }
 .error-post {
   color: red;
+}
+.container-tweets {
+  height: 120px;
 }

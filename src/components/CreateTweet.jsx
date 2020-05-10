@@ -1,6 +1,12 @@
 import React from 'react';
 import '../App.css';
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+} from 'react-router-dom';
 //import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 class CreateTweet extends React.Component {
@@ -36,8 +42,8 @@ class CreateTweet extends React.Component {
     const { inputValue, btnDisable, alert } = this.state;
     return (
       <>
-        <div className=' input-group container mb-3 mt-2 d-flex justify-content-center'>
-          <form onSubmit={this.launchCreate} className='w-50'>
+        <div className=' input-group container mb-3 mt-2 d-flex justify-content-center col-8'>
+          <form onSubmit={this.launchCreate} className='w-100'>
             <textarea
               placeholder='type your tweet...'
               type='text'
@@ -71,4 +77,4 @@ class CreateTweet extends React.Component {
   }
 }
 
-export default CreateTweet;
+export default withRouter(CreateTweet);

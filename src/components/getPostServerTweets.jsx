@@ -3,6 +3,13 @@ import '../App.css';
 import CreateTweet from './CreateTweet';
 import TweetList from './TweetList';
 import { getTweets, createTweet } from '../lib/api';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+} from 'react-router-dom';
 
 class GetPostTweets extends React.Component {
   constructor(props) {
@@ -12,15 +19,19 @@ class GetPostTweets extends React.Component {
       spinner: false,
       error: false,
       errorType: '',
+      userName: '',
     };
   }
 
   componentDidMount() {
+    const newName = localStorage.getItem('userName');
+    this.setState({ userName: newName }, () =>
+      this.props.setCurrentName(this.state.userName)
+    );
     this.fetchTweet();
   }
 
   async fetchTweet() {
-    const { tweets } = this.state;
     const data = await getTweets();
     this.setState({ tweets: data.data.tweets, spinner: false });
   }
@@ -29,11 +40,10 @@ class GetPostTweets extends React.Component {
     this.setState({ spinner: true, error: false, errorType: '' });
     let date = new Date().toISOString();
     let tweet = {
-      tweet: { userName: 'yoyoyo mr. yo-yo', content: value, date: date },
+      tweet: { userName: this.state.userName, content: value, date: date },
     };
     createTweet(tweet)
       .then((response) => {
-        console.log(response);
         this.fetchTweet();
       })
       .catch((error) => {
@@ -90,4 +100,4 @@ class GetPostTweets extends React.Component {
   }
 }
 
-export default GetPostTweets;
+export default withRouter(GetPostTweets);

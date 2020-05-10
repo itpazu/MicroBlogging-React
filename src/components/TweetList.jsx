@@ -1,5 +1,12 @@
 import React from 'react';
 import '../App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+} from 'react-router-dom';
 
 class TweetList extends React.Component {
   constructor(props) {
@@ -11,11 +18,8 @@ class TweetList extends React.Component {
     const { keyItem, id, author, content } = this.props;
     return (
       <>
-        <div className='container mb-3'>
-          <div
-            key={keyItem}
-            className='wrapper-tweet card w-50 h-100  d-flex justify-content-center text-center mx-auto '
-          >
+        <div className='col-8 mb-3 mx-auto container-tweets '>
+          <div key={keyItem} className='wrapper-tweet card h-100'>
             <div className='header-tweet d-flex justify-content-between border-0 '>
               <div> {author} </div>
               <div>{id}</div>
@@ -28,4 +32,4 @@ class TweetList extends React.Component {
   }
 }
 
-export default TweetList;
+export default withRouter(TweetList);
