@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './App.css';
 import GetPostTweets from './components/getPostServerTweets';
 import UserProfile from './components/profile';
@@ -9,25 +9,32 @@ import {
   Link,
   withRouter,
 } from 'react-router-dom';
+import { contextUserName } from './lib/AppContext';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentName: '',
-    };
-  }
+const App = (props) => {
+  const [currentName, setCurrentName] = useState('');
 
-  setCurrentName = (name) => {
-    this.setState({ currentName: name }, () =>
-      console.log(this.state.currentName)
-    );
+  // useEffect((name) => setCurrentName(name), [])
+  const context = useContext(contextUserName);
+
+  useEffect(() => {
+    let newName = localStorage.getItem('userName');
+    setCurrentName(newName);
+  }, []);
+
+  const updateUserName = (newName) => {
+    setCurrentName(newName);
   };
-  render() {
-    const { currentName } = this.state;
-    return (
-      <>
-        <Router>
+
+  return (
+    <>
+      <Router>
+        <contextUserName.Provider
+          value={{
+            currentName: currentName,
+            updateUserName: (newName) => updateUserName(newName),
+          }}
+        >
           <nav className='nav col-10 w-100 mx-auto nav-bar rounded '>
             <Link className='nav-link text-muted' to='/'>
               Home
@@ -47,15 +54,15 @@ class App extends React.Component {
 
             <Route path='/'>
               <GetPostTweets
-                setCurrentName={(name) => this.setCurrentName(name)}
+              // currentName={(name) => setCurrentName(name)}
               ></GetPostTweets>
             </Route>
           </Switch>
-        </Router>
-      </>
-    );
-  }
-}
+        </contextUserName.Provider>
+      </Router>
+    </>
+  );
+};
 
 export default App;
 

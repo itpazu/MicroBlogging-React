@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 import CreateTweet from './CreateTweet';
 import TweetList from './TweetList';
@@ -10,6 +10,7 @@ import {
   Link,
   withRouter,
 } from 'react-router-dom';
+import { ContextTweetList, contextUserName } from '../lib/AppContext';
 
 class GetPostTweets extends React.Component {
   constructor(props) {
@@ -22,12 +23,14 @@ class GetPostTweets extends React.Component {
       userName: '',
     };
   }
+  static contextType = contextUserName;
 
   componentDidMount() {
-    const newName = localStorage.getItem('userName');
-    this.setState({ userName: newName }, () =>
-      this.props.setCurrentName(this.state.userName)
-    );
+    let { currentName } = this.context.currentName;
+    this.setState({ userName: currentName });
+    this.interval = setInterval(() => {
+      this.fetchTweet();
+    }, 5000);
     this.fetchTweet();
   }
 
@@ -40,11 +43,11 @@ class GetPostTweets extends React.Component {
     this.setState({ spinner: true, error: false, errorType: '' });
     let date = new Date().toISOString();
     let tweet = {
-      tweet: { userName: this.state.userName, content: value, date: date },
+      tweet: { userName: this.context.currentName, content: value, date: date },
     };
     createTweet(tweet)
       .then((response) => {
-        this.fetchTweet();
+        this.storeTweetLocally(tweet);
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -56,8 +59,19 @@ class GetPostTweets extends React.Component {
       });
   }
 
+  storeTweetLocally(tweetToStore) {
+    let currentTweets = this.state.tweets;
+    let { tweet } = tweetToStore;
+    let modifiedTweets = [tweet, ...currentTweets];
+    this.setState({ tweets: modifiedTweets, spinner: false });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   render() {
-    const { tweets, spinner, error, errorType } = this.state;
+    const { tweets, spinner, error, errorType, userName } = this.state;
 
     return (
       <>
@@ -72,28 +86,20 @@ class GetPostTweets extends React.Component {
           {error && (
             <div className='error-post'>{`post will not be added - ${errorType}`}</div>
           )}
-
-          <CreateTweet
-            createTweet={this.storeNewTweet.bind(this)}
-            tweetObject={tweets}
-            butnDisableDoubleRequest={true}
-          ></CreateTweet>
-          {
-            <div>
-              {tweets.map((tweet, index) => (
-                <TweetList
-                  keyItem={index}
-                  author={tweet.userName}
-                  id={tweet.date}
-                  content={tweet.content}
-                >
-                  {error && (
-                    <div>{`post will not be added - ${errorType}`}</div>
-                  )}
-                </TweetList>
-              ))}
-            </div>
-          }
+          <ContextTweetList.Provider
+            value={{
+              tweets: tweets,
+              spinner: spinner,
+              error: error,
+              errorType: errorType,
+              userName: userName,
+              createTweet: (value) => this.storeNewTweet(value),
+              butnDisableDoubleRequest: true,
+            }}
+          >
+            <CreateTweet></CreateTweet>
+            <TweetList></TweetList>
+          </ContextTweetList.Provider>
         </div>
       </>
     );

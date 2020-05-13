@@ -7,6 +7,7 @@ import {
   Link,
   withRouter,
 } from 'react-router-dom';
+import { ContextTweetList } from '../lib/AppContext';
 
 class TweetList extends React.Component {
   constructor(props) {
@@ -14,19 +15,27 @@ class TweetList extends React.Component {
     this.state = {};
   }
 
+  static contextType = ContextTweetList;
+
   render() {
-    const { keyItem, id, author, content } = this.props;
+    const { tweets } = this.context;
     return (
       <>
-        <div className='col-8 mb-3 mx-auto container-tweets '>
-          <div key={keyItem} className='wrapper-tweet card h-100'>
-            <div className='header-tweet d-flex justify-content-between border-0 '>
-              <div> {author} </div>
-              <div>{id}</div>
+        {tweets.map((tweet, index) => {
+          return (
+            <div key={index} className='col-8 mb-3 mx-auto container-tweets '>
+              <div className='wrapper-tweet card h-100'>
+                <div className='header-tweet d-flex justify-content-between border-0 '>
+                  <div> {tweet.userName} </div>
+                  <div>{tweet.date}</div>
+                </div>
+                <div className='card-body card-tweet h-100 '>
+                  {tweet.content}
+                </div>
+              </div>
             </div>
-            <div className='card-body card-tweet h-100 '>{content}</div>{' '}
-          </div>
-        </div>
+          );
+        })}
       </>
     );
   }

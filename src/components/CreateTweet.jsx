@@ -1,80 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../App.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  withRouter,
-} from 'react-router-dom';
-//import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { ContextTweetList } from '../lib/AppContext';
 
-class CreateTweet extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputValue: '',
-      btnDisable: true,
-      alert: false,
-    };
-    this.handleInput = this.handleInput.bind(this);
-    this.launchCreate = this.launchCreate.bind(this);
-  }
+const CreateTweet = (props) => {
+  const [inputValue, setInputValue] = useState('');
+  const [btnDisable, setBtnDisable] = useState(true);
+  const [alertTweetLength, setAlertTweetLength] = useState(false);
+  const context = useContext(ContextTweetList);
+  const { createTweet } = context;
 
-  handleInput = (e) => {
-    this.setState({ inputValue: e.target.value, btnDisable: false });
-    if (e.target.value.length == 0 || e.target.value.length > 140) {
-      this.setState({ btnDisable: true });
+  useEffect(() => {
+    if (inputValue == 0 || inputValue.length > 140) {
+      setBtnDisable(true);
     }
-    e.target.value.length > 140
-      ? this.setState({ alert: true })
-      : this.setState({ alert: false });
+    inputValue.length > 140
+      ? setAlertTweetLength(true)
+      : setAlertTweetLength(false);
+  }, [inputValue]);
+
+  const handleInput = (e) => {
+    setInputValue(e.target.value);
+    setBtnDisable(false);
   };
 
-  launchCreate = (e) => {
+  const launchCreate = (e) => {
     e.preventDefault();
-    const { inputValue } = this.state;
-    this.setState({ inputValue: '', btnDisable: true });
-    this.props.createTweet(inputValue);
+    setInputValue('');
+    setBtnDisable(true);
+    createTweet(inputValue);
   };
 
-  render() {
-    const { inputValue, btnDisable, alert } = this.state;
-    return (
-      <>
-        <div className=' input-group container mb-3 mt-2 d-flex justify-content-center col-8'>
-          <form onSubmit={this.launchCreate} className='w-100'>
-            <textarea
-              placeholder='type your tweet...'
-              type='text'
-              onChange={this.handleInput}
-              value={inputValue}
-              className='form-control text-area h-100 ;'
-              aria-label='With textarea'
-            ></textarea>
-            <span className='input-group-append span-btn mr-3'>
-              <button
-                className='btn btn btn-primary'
-                type='submit'
-                disabled={btnDisable}
-              >
-                {' '}
-                Create Tweet
-              </button>
+  return (
+    <>
+      <div className=' input-group container mb-3 mt-2 d-flex justify-content-center col-8'>
+        <form onSubmit={launchCreate} className='w-100'>
+          <textarea
+            placeholder='type your tweet...'
+            type='text'
+            onChange={handleInput}
+            value={inputValue}
+            className='form-control text-area h-100 ;'
+            aria-label='With textarea'
+          ></textarea>
+          <span className='input-group-append span-btn mr-3'>
+            <button
+              className='btn btn btn-primary'
+              type='submit'
+              disabled={btnDisable}
+            >
+              {' '}
+              Create Tweet
+            </button>
+          </span>
+          {alertTweetLength && (
+            <span
+              className='alert alert-danger div-alert w-50 h-25 ml-3 '
+              role='alert'
+            >
+              140 charchters are exceeded!
             </span>
-            {alert && (
-              <span
-                className='alert alert-danger div-alert w-50 h-25 ml-3 '
-                role='alert'
-              >
-                140 charchters are exceeded!
-              </span>
-            )}
-          </form>
-        </div>
-      </>
-    );
-  }
-}
+          )}
+        </form>
+      </div>
+    </>
+  );
+};
 
-export default withRouter(CreateTweet);
+export default CreateTweet;
