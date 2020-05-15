@@ -11,6 +11,7 @@ import {
   withRouter,
 } from 'react-router-dom';
 import { ContextTweetList, contextUserName } from '../lib/AppContext';
+import fireBaseDB from '../firesbase';
 
 class GetPostTweets extends React.Component {
   constructor(props) {
@@ -28,32 +29,50 @@ class GetPostTweets extends React.Component {
   componentDidMount() {
     let { currentName } = this.context.currentName;
     this.setState({ userName: currentName });
-    this.interval = setInterval(() => {
-      this.fetchTweet();
-    }, 5000);
+    // this.interval = setInterval(() => {
+    //   this.fetchTweet();
+    // }, 5000);
     this.fetchTweet();
   }
 
-  async fetchTweet() {
-    const data = await getTweets();
-    this.setState({ tweets: data.data.tweets, spinner: false });
+  fetchTweet() {
+    const data = getTweets()
+      // console.log(data);
+      // console.log(typeof data);
+      .then((doc) => {
+        if (!doc.exists) {
+          console.log('No such document!');
+        } else {
+          console.log('Tweets data:', doc.data());
+        }
+      })
+
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
+    // let dt = data.data();
+    // let firstel = dt[0];
+    // console.log(firstel);
+    // data.forEach((doc) => console.log(doc.data()));
   }
 
   storeNewTweet(value) {
     this.setState({ spinner: true, error: false, errorType: '' });
     let date = new Date().toISOString();
     let tweet = {
-      tweet: { userName: this.context.currentName, content: value, date: date },
+      userName: this.context.currentName,
+      content: value,
+      date: date,
     };
     createTweet(tweet)
-      .then((response) => {
+      .then(() => {
         this.storeTweetLocally(tweet);
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.log(error.response);
         this.setState({
           error: true,
-          errorType: error.response.data,
+          errorType: error,
           spinner: false,
         });
       });

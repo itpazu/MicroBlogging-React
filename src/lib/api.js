@@ -1,12 +1,12 @@
 import React from 'react';
-import axios from 'axios';
-
-const url = 'https://itc-bootcamp-19-dot-charcha-dev.appspot.com/tweet';
+// import axios from 'axios';
+import fireBaseDB from '../firesbase';
 
 export function getTweets() {
-  return axios.get(url);
+  return fireBaseDB.collection('tweets').get();
 }
 
 export function createTweet(tweet) {
-  return axios.post(url, tweet);
+  console.log(tweet);
+  return fireBaseDB.collection('tweets').add(tweet);
 }
