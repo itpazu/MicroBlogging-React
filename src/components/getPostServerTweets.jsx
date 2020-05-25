@@ -29,31 +29,24 @@ class GetPostTweets extends React.Component {
   componentDidMount() {
     let { currentName } = this.context.currentName;
     this.setState({ userName: currentName });
-    // this.interval = setInterval(() => {
-    //   this.fetchTweet();
-    // }, 5000);
+    this.interval = setInterval(() => {
+      this.fetchTweet();
+    }, 2000);
     this.fetchTweet();
   }
 
   fetchTweet() {
+    let fetchedTweets = [];
     const data = getTweets()
-      // console.log(data);
-      // console.log(typeof data);
-      .then((doc) => {
-        if (!doc.exists) {
-          console.log('No such document!');
-        } else {
-          console.log('Tweets data:', doc.data());
-        }
+      .then((data) => {
+        data.forEach((doc) => {
+          fetchedTweets = [...fetchedTweets, doc.data()];
+        });
+        this.setState({ tweets: fetchedTweets });
       })
-
       .catch((err) => {
         console.log('Error getting document', err);
       });
-    // let dt = data.data();
-    // let firstel = dt[0];
-    // console.log(firstel);
-    // data.forEach((doc) => console.log(doc.data()));
   }
 
   storeNewTweet(value) {
@@ -67,6 +60,7 @@ class GetPostTweets extends React.Component {
     createTweet(tweet)
       .then(() => {
         this.storeTweetLocally(tweet);
+        this.setState({ spinner: false });
       })
       .catch((error) => {
         console.log(error.response);
@@ -80,8 +74,7 @@ class GetPostTweets extends React.Component {
 
   storeTweetLocally(tweetToStore) {
     let currentTweets = this.state.tweets;
-    let { tweet } = tweetToStore;
-    let modifiedTweets = [tweet, ...currentTweets];
+    let modifiedTweets = [tweetToStore, ...currentTweets];
     this.setState({ tweets: modifiedTweets, spinner: false });
   }
 

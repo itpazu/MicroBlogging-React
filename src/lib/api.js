@@ -3,10 +3,14 @@ import React from 'react';
 import fireBaseDB from '../firesbase';
 
 export function getTweets() {
-  return fireBaseDB.collection('tweets').get();
+  let collection = fireBaseDB
+    .collection('tweets')
+    .orderBy('date', 'desc')
+    .limit(10);
+  return collection.get();
 }
 
 export function createTweet(tweet) {
-  console.log(tweet);
-  return fireBaseDB.collection('tweets').add(tweet);
+  // return fireBaseDB.collection('tweets').add(tweet);
+  return fireBaseDB.collection('tweets').doc(tweet.date).set(tweet);
 }

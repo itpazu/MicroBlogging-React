@@ -14,7 +14,6 @@ import { contextUserName } from './lib/AppContext';
 const App = (props) => {
   const [currentName, setCurrentName] = useState('');
 
-  // useEffect((name) => setCurrentName(name), [])
   const context = useContext(contextUserName);
 
   useEffect(() => {
@@ -65,34 +64,3 @@ const App = (props) => {
 };
 
 export default App;
-
-/*
-
-this.state.tweets = [{id:someid, content:somecontent, date: ()=> Date.now(), author:Itzik}]
-Create tweets and show them.
-
-
-APP
-________________________________________
-_____________________________
-|     CREATE TWWT            |
-    state = teets, inputCreation
-    deletesTweet()
-
-
-
-
-______________________________
-
-  _________________________
-  | TweetList tweets={this.state.tweets}              |
-    
-    map!!!! and we list each one of them.
-   tweetComponent
-   [Happy Birthday, Delete Tweet.][][][][][][][][][][][]
-
-   _________________________
-
-________________________________________
-
-*/

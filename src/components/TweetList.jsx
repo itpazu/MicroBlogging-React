@@ -19,12 +19,16 @@ class TweetList extends React.Component {
 
   render() {
     const { tweets } = this.context;
+
+    // let reverse_tweets = tweets.reverse();
     return (
       <>
         {tweets.map((tweet, index) => {
           return (
             <div key={index} className='col-8 mb-3 mx-auto container-tweets '>
+              {' '}
               <div className='wrapper-tweet card h-100'>
+                {' '}
                 <div className='header-tweet d-flex justify-content-between border-0 '>
                   <div> {tweet.userName} </div>
                   <div>{tweet.date}</div>

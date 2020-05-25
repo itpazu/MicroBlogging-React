@@ -7,6 +7,7 @@ const CreateTweet = (props) => {
   const [btnDisable, setBtnDisable] = useState(true);
   const [alertTweetLength, setAlertTweetLength] = useState(false);
   const context = useContext(ContextTweetList);
+
   const { createTweet } = context;
 
   useEffect(() => {
