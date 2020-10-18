@@ -13,7 +13,7 @@
 
 /build/
 
-/src/firebase.js
+/src/firesbase.js
 # misc
 .DS_Store
 .env.local
