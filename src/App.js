@@ -14,7 +14,7 @@ import { contextUserName } from './lib/AppContext';
 const App = (props) => {
   const [currentName, setCurrentName] = useState('');
 
-  const context = useContext(contextUserName);
+  // const context = useContext(contextUserName);
 
   useEffect(() => {
     let newName = localStorage.getItem('userName');
@@ -52,9 +52,7 @@ const App = (props) => {
             </Route>
 
             <Route path='/'>
-              <GetPostTweets
-              // currentName={(name) => setCurrentName(name)}
-              ></GetPostTweets>
+              <GetPostTweets></GetPostTweets>
             </Route>
           </Switch>
         </contextUserName.Provider>
